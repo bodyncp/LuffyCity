@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>index</title>
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+    <script src="http://cdn.hcharts.cn/highcharts/highcharts.js"></script>
+    <script src="https://img.hcharts.cn/highcharts/modules/exporting.js"></script>
+    <script src="https://img.hcharts.cn/highcharts-plugins/highcharts-zh_CN.js"></script>
+</head>
+<body style="background-color: #ffefdf">
+<div class="container">
+    <div class="row">
+        <div class="col-md-2"
+             style="position: fixed;bottom: 450px;left: 10px;width: 220px;height: 200px;border: 0 red solid">
+            <div id="contain" style="width: 250px;height: 220px ; position: absolute;top: 0;left: 0"></div>
+            {# 这个是表格所在位置            #}
+        </div>
+        <div class="col-md-2"
+             style="position: fixed;bottom: 100px;left: 10px;width: 260px;height: 100px;">
+            <div class="panel panel-default">
+                <div class="panel-heading">今日代码量倒数的学员</div>
+                <ul class="list-group">
+                    {% for u in last_man_list %}
+                        <li class="list-group-item">
+                            <span class="text-danger">学员:{{ u.1.0 }}</span>&nbsp;
+                            <span class="text-danger">总代码量:{{ u.1.1 }}</span>&nbsp;
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-2" style="position: fixed;bottom: 320px;left: 10px;width: 250px;height: 100px;">
+            <div class="panel panel-default">
+                <div class="panel-heading">今日没有总结的同学</div>
+                <ul class="list-group">
+                    {% for u in code_res %}
+                        <li class="list-group-item">
+                            <span class="text-danger">学员:{{ u.1.0 }}</span>&nbsp;
+                            <span class="text-danger">总代码量:{{ u.1.1 }}</span>&nbsp;
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-md-8 col-lg-offset-2">
+
+            <div class="panel panel-default " style="background-color: gainsboro">
+                <div class="panel-heading text-center"><strong class="text-danger ">今日代码量前四位的同学</strong></div>
+                <div class="panel-body text-center">
+                    <h4 class="text-success"><em>每天不撸代码八小时我很慌！</em></h4>
+                </div>
+                <ul class="list-group">
+                    {% for foo in summary %}
+                        <li class="list-group-item">
+                            <div class="media">
+                                <div class="media-left">
+                                    <a href="#">
+                                        <img width="40px" height="40px" class="media-object"
+                                             src="/media/{{ foo.user.head_image }}" alt="...">
+                                    </a>
+                                </div>
+                                <div class="media-body">
+                                    <h4 class="media-heading"><em>{{ foo.abstract }}</em></h4>
+                                    <ul class="list-group">
+                                        <li class="list-group-item "><span class="text-success small">{{ yesterday }}&nbsp;&nbsp;{{ foo.tomorrow_content }}{{ foo.tomorrow_content }}{{ foo.tomorrow_content }}</span>
+                                        </li>
+                                        <li class="list-group-item "><span class="text-danger small">{{ today }}&nbsp;&nbsp;{{ foo.tomorrow_content }}</span>
+                                        </li>
+                                        <div class="pull-right">
+                                            <span>学员:&nbsp;</span><strong>{{ foo.user.username }}</strong>&nbsp;
+                                            <span>发布于:&nbsp;<strong
+                                                    class="text-danger">{{ foo.create_time|date:"Y-m-d" }}</strong></span>&nbsp;
+                                            <span>昨日代码量:&nbsp;<strong class="text-danger">{{ foo.code }}</strong></span>&nbsp;
+                                            <span>昨日计划是否完成:&nbsp;<strong
+                                                    class="text-danger">{{ foo.complete }}</strong></span>&nbsp;
+                                        </div>
+                                    </ul>
+                                </div>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="panel panel-default">
+                <div class="panel-heading text-center"><span class="text-danger">本人信息</span></div>
+                <div class="panel-body">
+                    <p class="small text-warning">--&nbsp;<em>{{ request.user.signature }}</em></p>
+                </div>
+                <ul class="list-group">
+                    <li class="list-group-item">代码总量: <span class="text-danger">{{ user_all_code }}</span></li>
+                    <li class="list-group-item">获得点赞数: <span class="text-danger">待完善</span></li>
+                    {% if res == 0 %}
+                        <li class="list-group-item"><span class="text-success">未到汇报时间</span></li>
+                    {% elif res == 1 %}
+                        {% if code == 1 %}
+                            <li class="list-group-item"><span class="text-success">已汇报任务</span></li>
+                        {% else %}
+                            <li class="list-group-item"><a href="/summary/">汇报今日任务</a></li>
+                        {% endif %}
+                    {% endif %}
+                    <li class="list-group-item"><a href="/logout/">注销</a></li>
+                </ul>
+            </div>
+            <div class="panel panel-default modefy">
+                <div class="panel-heading ">获赞最多博客地址</div>
+                <ul class="list-group">
+                    <li class="list-group-item">面向对象</li>
+                    <li class="list-group-item">模块的使用</li>
+                    <li class="list-group-item">并发编程知识</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</body>
+<script src="/static/jquery/jquery-3.2.1.min.js"></script>
+<script src="/static/jquery/index.js"></script>
+</html>

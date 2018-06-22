@@ -1,0 +1,46 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+
+.modefy {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.nav_a {
+    padding-left: 100px;
+}
+#headImg{
+    width: 20px;
+    height: 20px;
+    margin-top: 15px;
+    cursor: pointer;
+}
+
+
+.header{
+    padding-bottom: 1px;
+    padding-top: 1px;
+    padding-left: 140px;
+    margin-bottom: 5px;
+}
+
+.menu{
+    margin-bottom: 2px;
+
+}
+
+.f-footer{
+
+    margin-top: 5px;
+}
+
+
+.right_tu{
+
+    position: fixed;
+    bottom: 10px;
+    right: 0;
+}
