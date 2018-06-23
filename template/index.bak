@@ -2,58 +2,61 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>学习情况展示详情</title>
+    <title>index</title>
     <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
     <script src="https://img.hcharts.cn/highcharts/modules/exporting.js"></script>
     <script src="https://img.hcharts.cn/highcharts-plugins/highcharts-zh_CN.js"></script>
 </head>
-<body style="background-color: #26272c ;min-width: 980px">
+<body style="background-color: #ffefdf">
 <div class="container">
     <div class="row">
-        <div class="col-md-2">
-            <div id="contain" style="width: 250px;height: 220px; position: absolute;left: -52px;top: 30px "></div>
-            <div class="container">
-                <div class="row">
-                    <div style="width: 300px;position: absolute;top: 250px;left: -50px">
-                        <div class="panel panel-default">
-                            <div class="panel-heading"> <span class="text-danger"><strong>昨日没有总结的同学</strong></span> </div>
-                            <ul class="list-group">
-                                {% for u in code_res %}
-                                    <li class="list-group-item">
-                                        <span class="text-info">学员:{{ u.1.0 }}</span>&nbsp;
-                                        <span class="text-danger">总代码量:{{ u.1.1 }}</span>&nbsp;
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    </div>
-                    <div style="width: 300px ;position: absolute;top: 480px;left: -52px">
-                        <div class="panel panel-default">
-                            <div class="panel-heading "> <span class="text-info">昨日代码总量有点少的学员 </span></div>
-                            <ul class="list-group">
-                                {% for u in last_man_list %}
-                                    <li class="list-group-item">
-                                        <span class="text-danger">学员:{{ u.1.0 }}</span>&nbsp;
-                                        <span class="text-danger">总代码量:{{ u.1.1 }}</span>&nbsp;
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+        <div class="col-md-2"
+             style="position: absolute;bottom: 450px;left: 10px;width: 220px;height: 200px;border: 0 red solid">
+            <div id="contain" style="width: 250px;height: 220px ; position: absolute;top: 0;left: 0;"></div>
+
+        </div>
+        <div class="col-md-2"
+             style="position: fixed;bottom: 100px;left: 10px;width: 260px;height: 100px;">
+            <div class="panel panel-default">
+                <div class="panel-heading">今日代码量倒数的学员</div>
+                <ul class="list-group">
+                    {% for u in last_man_list %}
+                        <li class="list-group-item">
+                            <span class="text-danger">学员:{{ u.1.0 }}</span>&nbsp;
+                            <span class="text-danger">总代码量:{{ u.1.1 }}</span>&nbsp;
+                        </li>
+                    {% endfor %}
+                </ul>
             </div>
         </div>
-        <div class="col-md-8 " style="left: 45px">
+        <div class="col-md-2" style="position: fixed;bottom: 320px;left: 10px;width: 250px;height: 100px;">
+            <div class="panel panel-default">
+                <div class="panel-heading">今日没有总结的同学</div>
+                <ul class="list-group">
+                    {% for u in code_res %}
+                        <li class="list-group-item">
+                            <span class="text-danger">学员:{{ u.1.0 }}</span>&nbsp;
+                            <span class="text-danger">总代码量:{{ u.1.1 }}</span>&nbsp;
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+
+
+
+        <div class="col-md-8 col-lg-offset-2">
+
             <div class="panel panel-default " style="background-color: gainsboro">
-                <div class="panel-heading text-center"><strong class="text-warning"><em>今日代码量排名前四位的同学</em></strong>
-                </div>
-                <div class="panel-body text-center" style="background-image: url('/media/Head/background2.png/')">
+                <div class="panel-heading text-center"><strong class="text-warning"><em>今日代码量排名前四位的同学</em></strong></div>
+                <div class="panel-body text-center">
                     <h4 class="text-success"><em> 大佬们,不撸代码就没有媳妇！</em></h4>
                 </div>
-                <ul class="list-group" >
+                <ul class="list-group">
                     {% for foo in summary1 %}
                         <li class="list-group-item">
-                            <div class="media" >
+                            <div class="media">
                                 <div class="media-left">
                                     <a href="#">
                                         <img width="40px" height="40px" class="media-object"
@@ -63,11 +66,9 @@
                                 <div class="media-body">
                                     <h4 class="media-heading"><em>{{ foo.abstract }}</em></h4>
                                     <ul class="list-group">
-                                        <li class="list-group-item  "><span class="text-success small">{{ yesterday }}&nbsp;&nbsp;</span><span
-                                                class="small"><em>{{ foo.tomorrow_content }}</em></span>
+                                        <li class="list-group-item "><span class="text-success small">{{ yesterday }}&nbsp;&nbsp;</span><span class="small"><em>{{ foo.tomorrow_content }}</em></span>
                                         </li>
-                                        <li class="list-group-item "><span class="text-danger small">{{ today }}&nbsp;&nbsp;</span><span
-                                                class="small"><em>{{ foo.tomorrow_content }}</em></span>
+                                        <li class="list-group-item "><span class="text-danger small">{{ today }}&nbsp;&nbsp;</span><span class="small"><em>{{ foo.tomorrow_content }}</em></span>
                                         </li>
                                         <div class="pull-right">
                                             <span>学员:&nbsp;</span><strong>{{ foo.user.username }}</strong>&nbsp;
@@ -85,11 +86,11 @@
                 </ul>
             </div>
         </div>
-        <div class="col-md-2" style="left: 35px">
+        <div class="col-md-2">
             <div class="panel panel-default">
                 <div class="panel-heading text-center"><span class="text-danger">本人信息</span></div>
                 <div class="panel-body">
-                    <p class="small text-warning">--&nbsp;<em> <em class="text-info">{{ request.user.username }}</em> {{ request.user.signature }}</em></p>
+                    <p class="small text-warning">--&nbsp;<em>{{ request.user.signature }}</em></p>
                 </div>
                 <ul class="list-group">
                     <li class="list-group-item">代码总量: <span class="text-danger">{{ user_all_code }}</span></li>
@@ -109,10 +110,9 @@
             <div class="panel panel-default modefy">
                 <div class="panel-heading ">获赞最多博客地址</div>
                 <ul class="list-group">
-                    <li class="list-group-item">模块的使用</li>
                     <li class="list-group-item">面向对象</li>
+                    <li class="list-group-item">模块的使用</li>
                     <li class="list-group-item">并发编程知识</li>
-                    <li class="list-group-item">数据库知识</li>
                 </ul>
             </div>
         </div>
@@ -124,36 +124,39 @@
 <script src="http://cdn.hcharts.cn/highcharts/highcharts.js"></script>
 <script>
 
+
     $.ajax({
         url: '/getdata/',
         type: "get",
         success: function (data) {
             var getdate = data.data;
             Highcharts.chart('contain', {
-                credits: {
+                credits:{
                     enabled: false
                 },
                 chart: {
-                    backgroundColor: '#26272c',
+                    backgroundColor: '#feefe0',
                     type: 'line'
                 },
+
                 title: {
                     style: {
                         "fontFamily": "\"微软雅黑\", Arial, Helvetica, sans-serif",
-                        "color": 'red',
-                        "fontSize": "14px",
+                        "color":  'black',
+                        "fontSize": "10px",
                         "fontWeight": "normal",
                         "fontStyle": "normal",
 
                     },
-                    text: '总代码量前五名',
+                    text: '代码总量前五名',
+
                 },
                 exporting: {
                     "enabled": false,
                     "fallbackToExportServer": false
                 },
                 tooltip: {
-                    pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b>'
+                    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
                 },
                 plotOptions: {
                     pie: {
@@ -166,16 +169,18 @@
                         }
                     }
                 },
+
                 style: {
                     color: '#ff0000',
                     fontSize: "2px",
                     fontFamily: "Courier new",
-                    backgroundColor: "red",
+                    backgroundColor:"red",
                 },
                 series: [{
                     type: 'pie',
                     name: '代码总量占比',
-                    data: getdate
+                    data:
+                    getdate
                 }]
             })
         }
@@ -183,6 +188,7 @@
 
 
 </script>
+
 
 
 </html>

@@ -15,7 +15,7 @@
         }
     </style>
 </head>
-<body>
+<body style="background-image: url('/media/Head/register.png/');background-size: 100% 100%;">
 
 <h3 class="h3 text-success  col-lg-offset-5">注册页面</h3>
 <div class="container">
@@ -36,7 +36,7 @@
                                                        src="/media/Head/default.png"></label>
                     <input type="file" id="headImg">
                 </div>
-                <input type="button" value="注册" class="btn bg-primary pull-left" id="btn">
+                <input type="button" value="注册" class="btn bg-primary pull-right" id="btn" style="margin-top: -50px">
                 <span class="text-danger codespan"
                       style="display: inline-block; margin-top: 10px;margin-left: 5px"></span>
             </form>
@@ -72,7 +72,7 @@
                 data: dataform,
                 success: function (data) {
                     if (data.status) {
-                        location.href = "/index/"
+                        location.href = "/login/"
                     } else {
                         var msg_dict = data.msg;
                         console.log(msg_dict);

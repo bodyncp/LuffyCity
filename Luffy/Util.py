@@ -51,9 +51,7 @@ def get_img():
         write_str = random.choice([random_num, random_lowcase, random_upcase])
         code_list.append(write_str)
         draw.text((i * 20 + 30, 2), write_str, fill=get3random(simple=True), font=font_cate)
-
     codeStr = "".join(code_list)
-
     by = BytesIO()  # 相当于内存句柄
     new_img.save(by, "png")
     data = by.getvalue()
@@ -64,7 +62,7 @@ def get_img():
 def date_range():
     now_date = int(datetime.datetime.now().strftime("%H%M"))
 
-    datarange = range(2200, 2300)
+    datarange = range(2100, 2300)
 
     res = 1 if now_date in datarange else 0
 
@@ -84,12 +82,6 @@ def get_no_summary_user():
 
     no_summary_user_list = list(user_set - today_user_set)
 
-
     code_res = get_all_code(no_summary_user_list)
-
-
-
-
-
 
     return yesterday, today, code_res

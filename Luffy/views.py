@@ -4,7 +4,6 @@ from django.shortcuts import render, HttpResponse, redirect
 from django.http import JsonResponse
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
-
 from Luffy.Form import UserFrom, SummaryForm
 from Luffy import models
 from Luffy.Util import get_all_code, get_img, date_range, get_no_summary_user
@@ -16,12 +15,16 @@ def index(request):
     code_res.sort(key=lambda x: x[1][1])
     code_res = code_res[:3]
     res = date_range()
-
+    # res = 1
     user = [request.user.username, ]
-    user_all_code = get_all_code(user)[0][1][1]
+    try:
+        user_all_code = get_all_code(user)[0][1][1]
+    except Exception as e:
+        user_all_code = 0
     code = request.session.get("count")
     yesterday = str((datetime.datetime.now() - datetime.timedelta(days=1)).strftime("%Y-%m-%d"))
     summary = models.Summary.objects.filter(create_time=yesterday).order_by("-code")
+    summary1 = summary[0:4]
     try:
         last_three_man_name = [user.user.username for user in summary.reverse()[:3]]
     except Exception as e:
@@ -39,9 +42,10 @@ def register(request):
             response["user"] = form.cleaned_data.get("user")
             user = form.cleaned_data.get("user")
             pwd = form.cleaned_data.get("pwd")
-            addr = form.cleaned_data.get("addr")
-            phone = form.cleaned_data.get("phone")
-            url = form.cleaned_data.get("url")
+            # addr = form.cleaned_data.get("addr")
+            # phone = form.cleaned_data.get("phone")
+            email = form.cleaned_data.get("email")
+            # url = form.cleaned_data.get("url")
             models_id = form.cleaned_data.get("modules")
             teams_id = form.cleaned_data.get("teams")
             gender = form.cleaned_data.get("gender")
@@ -50,8 +54,8 @@ def register(request):
             if head_img_obj:
                 head_img_obj.name = str(uuid.uuid4()) + ".png"
                 extra_fields["head_image"] = head_img_obj
-            models.UserInfo.objects.create_user(username=user, password=pwd, phone=phone, url=url, modules_id=models_id,
-                                                addr=addr, teams_id=teams_id, gender=gender, **extra_fields)
+            models.UserInfo.objects.create_user(username=user, password=pwd, email=email, modules_id=models_id,
+                                                teams_id=teams_id, gender=gender, **extra_fields)
         else:
             msg = form.errors
             response["status"] = False
@@ -109,10 +113,9 @@ def summary(request):
         if form.is_valid():
             summary_dict = form.cleaned_data
             summary_dict["user_id"] = request.user.nid
+
             models.Summary.objects.create(**summary_dict)
-
             request.session['count'] = 1
-
             return redirect("/index/")
 
         else:

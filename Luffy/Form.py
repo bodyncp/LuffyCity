@@ -36,13 +36,13 @@ class UserFrom(forms.Form):
                              widget=widgets.PasswordInput(attrs={"class": "form-control"})
                              )
 
-    addr = forms.CharField(max_length=32, label="地址", error_messages={"required": "地址不能为空"},
-                           widget=widgets.TextInput(attrs={"class": "form-control"}))
+    # addr = forms.CharField(max_length=32, label="地址", error_messages={"required": "地址不能为空"},
+    #                        widget=widgets.TextInput(attrs={"class": "form-control"}))
+    #
+    email = forms.EmailField(label='电子邮箱', error_messages={"required": "电子邮箱不能为空", "invalid": "电子邮箱格式不正确"},
+                             widget=widgets.EmailInput(attrs={"class": "form-control"}))
 
-    phone = forms.IntegerField(label='手机号码', error_messages={"required": "手机号码不能为空", "invalid": "手机号码格式不正确"},
-                               widget=widgets.EmailInput(attrs={"class": "form-control"}))
-
-    url = forms.URLField(max_length=64, label="博客地址", widget=widgets.URLInput(attrs={"class": "form-control"}))
+    # url = forms.URLField(max_length=64, label="博客地址", widget=widgets.URLInput(attrs={"class": "form-control"}))
 
     modules = forms.ChoiceField(label="所属模块", choices=m_choices, initial=1,
                                 widget=widgets.Select(attrs={"class": "form-control"}))
@@ -61,7 +61,7 @@ class UserFrom(forms.Form):
 
     def clean_invite_code(self):
 
-        if self.cleaned_data.get("invite_code") == 'luffy-team':
+        if self.cleaned_data.get("invite_code") == 1234:
 
             return self.cleaned_data.get("invite_code")
 
@@ -90,7 +90,7 @@ class SummaryForm(forms.Form):
     today_content = forms.CharField(label="今日内容总结", error_messages={"required": "不能为空"},
                                     widget=widgets.Textarea(attrs={"class": "form-control", "rows": "7"}))
 
-    tomorrow_content = forms.CharField(label="今日内容总结", error_messages={"required": "不能为空"},
+    tomorrow_content = forms.CharField(label="明日计划任务", error_messages={"required": "不能为空"},
                                        widget=widgets.Textarea(attrs={"class": "form-control", "rows": "7"}))
 
     code = forms.IntegerField(label="今日代码量", error_messages={"required": "代码量不能为空", "invalid": "数字格式"},

@@ -5,7 +5,7 @@
     <title>登录页面</title>
     <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
 </head>
-<body>
+<body style="background-image: url('/media/Head/login2.png/');background-size: 100% 250%;background-repeat: no-repeat">
 <h3 class="h3 text-success  col-lg-offset-5">登录页面</h3>
 <div class="container">
     <div class="row">
@@ -13,11 +13,11 @@
             <form>
                 {% csrf_token %}
                 <div class="form-group">
-                    <label for="user">用户名</label>
+                    <label for="user"><span class="text-danger"><strong>用户名</strong></span></label>
                     <input type="text" id="user" class="form-control">
                 </div>
                 <div class="form-group">
-                    <label for="pwd">密码</label>
+                    <label for="pwd"><span class="text-danger"><strong>密码</strong></span></label>
                     <input type="password" id="pwd" class="form-control">
                 </div>
                 <div class="form-group">
@@ -27,7 +27,7 @@
                             <input type="text" class="form-control" id="code">
                         </div>
                         <div class="col-md-6 ">
-                            <label for="imgcode">点击图片刷新验证码</label>
+                            <label for="imgcode"><span class="text-danger"><strong>点击图片刷新验证码</strong></span></label>
                             <img src="/get_code/" class="imgCode">
                         </div>
                     </div>

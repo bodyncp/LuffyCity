@@ -24,7 +24,7 @@ SECRET_KEY = 'w8y@i+0gg6)6rjf)vl9$na0@fxl(8mf$jn(#_73&$6q_xpw6j2'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["47.96.110.95", '127.0.0.1']
 
 # Application definition
 
@@ -70,6 +70,19 @@ WSGI_APPLICATION = 'LuffyCity.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
+#
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'lufy',
+#         'HOST': '47.96.110.95',
+#         'PORT': '3306',
+#         'USER': 'root',
+#         'PASSWORD': '1234',
+#     }
+# }
+
+
 
 DATABASES = {
     'default': {
@@ -81,6 +94,7 @@ DATABASES = {
         'PASSWORD': '',
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
@@ -117,19 +131,19 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
-AUTH_USER_MODEL = "Luffy.UserInfo"
-
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
-
+    os.path.join(BASE_DIR, "static")
 ]
+
+AUTH_USER_MODEL = "Luffy.UserInfo"
+
 LOGIN_URL = "/login/"
 
 MEDIA_ROOT = os.path.join(BASE_DIR)
 
 MEDIA_URL = "/media/"
 
-
-
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+# STATIC_ROOT = os.path.join(BASE_DIR, "/static/")

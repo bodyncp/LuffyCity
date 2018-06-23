@@ -18,15 +18,17 @@ from django.urls import path, re_path
 from Luffy import views
 from django.views.static import serve
 from . import settings
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    re_path(r"^index/$",views.index),
-    re_path(r"^login/$",views.login),
-    re_path(r"^logout/$",views.logout),
-    re_path(r"^register/$",views.register),
-    re_path(r"^getdata/$",views.getdata),
-    re_path(r"^get_code/$",views.get_code),
-    re_path(r"^summary/$",views.summary),
+    re_path(r"^index/$", views.index),
+    re_path(r"^login/$", views.login),
+    re_path(r"^$", views.login),
+    re_path(r"^logout/$", views.logout),
+    re_path(r"^register/$", views.register),
+    re_path(r"^getdata/$", views.getdata),
+    re_path(r"^get_code/$", views.get_code),
+    re_path(r"^summary/$", views.summary),
     re_path(r'^media/(?P<path>.*)/$', serve, {"document_root": settings.MEDIA_ROOT}),
 
 ]
