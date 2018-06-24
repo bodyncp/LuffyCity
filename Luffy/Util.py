@@ -12,7 +12,12 @@ import datetime
 
 
 def get_all_code(name_list, chart=False):
-    # 查询出来出进来的这些人的总共的代码量
+    """
+    查询出来列表里的人的代码总量的总共的代码量
+    :param name_list: username list
+    :param chart: ajax or not
+    :return:
+    """
     man_all_code = models.Summary.objects.filter(user__username__in=name_list).values("user__username", "code")
     man_all_code_dict = {}
 
@@ -23,7 +28,7 @@ def get_all_code(name_list, chart=False):
 
     man_all_code_list = []
     for item in enumerate(man_all_code_dict.items()):
-        man_all_code_list.append(item)  # (1, ('jack', 30))
+        man_all_code_list.append(item)  # 不是ajax的格式:(1, ('jack', 30))
     if chart:
         ajax_list = []
         for i in man_all_code_list:
@@ -40,6 +45,10 @@ def get3random(simple=False):
 
 
 def get_img():
+    """
+    获取验证码图片
+    :return:
+    """
     new_img = Image.new("RGB", size=(270, 32), color=(get3random()))
     draw = ImageDraw.Draw(new_img)
     font_cate = ImageFont.truetype("static/font/font.otf", size=26)
@@ -60,6 +69,10 @@ def get_img():
 
 
 def date_range():
+    """
+    获取总结汇报时间
+    :return:
+    """
     now_date = int(datetime.datetime.now().strftime("%H%M"))
 
     datarange = range(2100, 2300)
@@ -69,26 +82,38 @@ def date_range():
     return res
 
 
-def get_no_summary_user():
+def get_no_summary_user(moudles=5):  # 添加一个默认参数 后期分模块查询的时候使用
+    """
+    获取没有总结的用户对象 以及 他们的总代码量
+    :param moudles:
+    :return:
+    """
     yesterday = str((datetime.datetime.now() - datetime.timedelta(days=1)).strftime("%Y-%m-%d"))
     today = str(datetime.datetime.now().strftime("%Y-%m-%d"))
-
+    # 当前全部的用户对象
     all_user = models.UserInfo.objects.all().filter(status=1).values_list("username")
-
+    # 组成一个用户 集合
     user_set = set([user[0] for user in all_user])
-
+    # 当天的有总结的用户对象
     today_user = models.Summary.objects.all().filter(create_time=yesterday).values_list("user__username")
+    # 当天有总结的用户集合
     today_user_set = set([user[0] for user in today_user])
-
+    # 获取没有总结的人的列表
     no_summary_user_list = list(user_set - today_user_set)
-
+    # 获取这些没有总结同学的总代码量
     code_res = get_all_code(no_summary_user_list)
 
     return yesterday, today, code_res
 
 
 def not_in_date(much_list, small_list):
-    # 判断 是不是满足七天 不满足 就 添加代码量为 0
+    """
+    判断 是不是满足七天 不满足 就 添加代码量为 0
+    :param much_list:
+    :param small_list:
+    :return:
+    """
+
     ext_list = []
     for c in much_list:  # 全部的日期(多的那个)
         if c not in small_list:  # 少的那个
@@ -96,7 +121,13 @@ def not_in_date(much_list, small_list):
     return ext_list
 
 
-def get_mounth_data(username, months=11):
+def get_month_data(username, months=11):
+    """
+    获取每个人每个月的代码总量
+    :param username:
+    :param months:
+    :return:
+    """
     month_code_list = []
     if not isinstance(months, int):
         return month_code_list

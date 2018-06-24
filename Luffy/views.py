@@ -3,37 +3,40 @@ import datetime
 from django.shortcuts import render, HttpResponse, redirect
 from django.http import JsonResponse
 from django.contrib import auth
+from Luffy import models
 from django.contrib.auth.decorators import login_required
 from Luffy.Form import UserFrom, SummaryForm
-from Luffy import models
 from Luffy.Util import get_all_code, get_img, not_in_date
-from Luffy.Util import date_range, get_no_summary_user, get_mounth_data
+from Luffy.Util import date_range, get_no_summary_user, get_month_data
 
 
 @login_required
 def index(request):
-    yesterday, today, code_res = get_no_summary_user()
+    yesterday, today, code_res = get_no_summary_user()  # 可以分模块查询出没总结的同学
     code_res.sort(key=lambda x: x[1][1])
-    code_res = code_res[:3]
-    # res = date_range()
-    res = 1
+    code_res = code_res[:3]  # 获取后三名
+    res = date_range()
+    # res = 1
     user = [request.user.username, ]
     try:
-        user_all_code = get_all_code(user)[0][1][1]
+        user_all_code = get_all_code(user)[0][1][1]  # 当前用户的代码量
     except Exception as e:
         user_all_code = 0
     code = request.session.get("count")
 
     # yesterday = str((datetime.datetime.now() - datetime.timedelta(days=1)).strftime("%Y-%m-%d"))
     # 可做分页展示
+    # 获取 全部总结  需要分模块查询
     summary = models.Summary.objects.filter(create_time=yesterday).order_by("-code")
     # 取前四名 展示
     summary1 = summary[0:4]
 
     try:
+        # 查询出 最后代码量少的三位同学
         last_three_man_name = [user.user.username for user in summary.reverse()[:3]]
     except Exception as e:
         last_three_man_name = [user.user.username for user in summary.reverse()]
+    # 获取了他们的代码总量
     last_man_list = get_all_code(last_three_man_name)
     return render(request, "index.html", locals())
 
@@ -163,7 +166,7 @@ def detail(request):
         code_all = [i[0] for i in code]
         response["sevenDate"] = date_seven_list
         response["codeCount"] = code_all
-        month_code_list = get_mounth_data(user)
+        month_code_list = get_month_data(user)
         response["monthCode"] = month_code_list
         return JsonResponse(response)
 
