@@ -5,64 +5,83 @@
     <title>个人信息</title>
     <script src="/static/jquery/jquery-3.2.1.min.js"></script>
     <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+    <script src="http://cdn.hcharts.cn/highcharts/highcharts.js"></script>
+    <script src="https://img.hcharts.cn/highcharts/modules/oldie.js"></script>
+    <script src="https://img.hcharts.cn/highcharts/modules/exporting.js"></script>
+    <script src="https://img.hcharts.cn/highcharts-plugins/highcharts-zh_CN.js"></script>
+    <script src="https://img.hcharts.cn/highcharts/highcharts-3d.js"></script>
     <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+
+    <style>
+
+
+    </style>
+
+
 </head>
-<body style="background-image: url('/media/Head/login.png/');">
+<body style="background-image: url('/media/Head/login.png/')">
 <nav class="navbar navbar-default">
     <div class="container-fluid">
         <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
                 <span class="sr-only">Toggle navigation</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">Brand</a>
+            <a class="navbar-brand"><span class="text-warning">{{ user }}</span>&nbsp;个人基本信息走势</a>
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
-                <li><a href="#">Link</a></li>
-            </ul>
+            {#            <ul class="nav navbar-nav">#}
+            {#                <li><a href="#"></a></li>#}
+            {#            </ul>#}
             <ul class="nav navbar-nav navbar-right">
                 <li><a><span class="text-danger"><strong><em>{{ request.user.username }}</em></strong></span></a></li>
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">其他功能<span class="caret"></span></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">其他功能<span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a href="#" class="active">修改个人信息</a></li>
-                        <li><a href="#">注销</a></li>
+                        <li><a href="/logout/">注销</a></li>
                     </ul>
                 </li>
             </ul>
-        </div><!-- /.navbar-collapse -->
-    </div><!-- /.container-fluid -->
+        </div>
+    </div>
 </nav>
 <div class="container">
     <div class="row">
 
         <div class="col-md-5">
 
-            <div style="border: 1px solid red">
+            <div style="border: 0 solid red">
 
-
-
-
-
+                <div id="container" style="width: 400px; height: 300px">
+                </div>
+                <div id="monthchart" style="width: 400px; height: 300px">
+                </div>
 
             </div>
 
 
         </div>
-        <div class="col-md-5">
-            <div style="border: 1px solid red"></div>
-
-
-
-
-
+        <div class="col-md-7" style="left: -50px">
+            <div style="border: 0 solid red;position: relative">
+                <div class="panel panel-default">
+                    <div class="panel-heading achover text-center"><span class="text-warning">近七天的总结</span></div>
+                    <div class="panel-body myhover" style="display:none;">
+                        <ul class="list-group">
+                            {% for sm in seven_days_summary %}
+                                <li class="list-group-item">{{ sm.create_time|date:"Y-m-d" }}:&nbsp;&nbsp;{{ sm.today_content }}<span class="text-danger pull-right">代码量:&nbsp;{{ sm.code }}</span></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
 
         </div>
-        <div class="col-md-2">xx</div>
-
+        <div class="col-md-2"></div>
 
 
     </div>
@@ -71,20 +90,148 @@
 </div>
 
 
-
-
-
-
 </body>
 
 <script>
 
+    $(".achover").hover(function () {
+
+        $(".myhover").slideDown("slow")
+    }, function () {
+        $(".myhover").slideUp("slow")
+    })
+
+    $.ajax({
+        url: '',
+        type: "get",
+        success: function (data) {
+            var sevenDate = data.sevenDate;
+            var codeCount = data.codeCount;
+            var monthCode = data.monthCode;
+            console.log(sevenDate);
+            console.log(codeCount);
+
+            Highcharts.chart('container', {
+                credits: {
+                    enabled: false
+                },
+                exporting: {
+                    "enabled": false,
+                    "fallbackToExportServer": false
+                },
+
+                chart: {
+                    type: 'line',
+                    backgroundColor: '#29282e',
+                },
+                title: {
+                    style: {
+                        "fontFamily": "\"微软雅黑\", Arial, Helvetica, sans-serif",
+                        "color": 'red',
+                        "fontSize": "14px",
+                        "fontWeight": "normal",
+                        "fontStyle": "normal",
+
+                    },
+
+                    text: '七天的代码量走势'
+                },
+                xAxis: {
+                    categories: sevenDate
+                },
+                yAxis: {
+                    title: {
+                        text: '行数 (Line)'
+                    }
+                },
+                plotOptions: {
+                    line: {
+                        dataLabels: {
+                            // 开启数据标签
+                            enabled: true
+                        },
+                        // 关闭鼠标跟踪，对应的提示框、点击事件会失效
+                        enableMouseTracking: false
+                    }
+                },
+                series: [{
+                    name: '日代码量',
+                    data: codeCount
+                }]
+            });
 
 
+            Highcharts.chart('monthchart', {
+                chart: {
+                    backgroundColor: '#23222a',
+                    type: 'column',
+                    margin: 75,
+                    options3d: {
+                        enabled: true,
+                        alpha: 10,
+                        beta: 25,
+                        depth: 70,
+                        viewDistance: 100,      // 视图距离，它对于计算角度影响在柱图和散列图非常重要。此值不能用于3D的饼图
+                        frame: {                // Frame框架，3D图包含柱的面板，我们以X ,Y，Z的坐标系来理解，X轴与 Z轴所形成
+                            bottom: {
+                                size: 10
+                            },
+                            side: {
+                                size: 1,
+                                color: 'transparent'
+                            },
+                            back: {
+                                size: 1,
+                                color: 'transparent'
+                            }
+                        }
+                    },
+                },
+                credits: {
+                    enabled: false
+                },
+                exporting: {
+                    "enabled": false,
+                    "fallbackToExportServer": false
+                },
+                title: {
+                    text: '月代码量统计',
+                    style: {
+                        "fontFamily": "\"微软雅黑\", Arial, Helvetica, sans-serif",
+                        "color": 'red',
+                        "fontSize": "14px",
+                        "fontWeight": "normal",
+                        "fontStyle": "normal",
+
+                    },
+                },
+                plotOptions: {
+                    column: {
+                        depth: 30
+                    }
+                },
+                xAxis: {
+                    categories: ['六月', '七月', '八月', '九月', '十一月', '十二月']
+                },
+                yAxis: {
+                    title: {
+                        text: "代码量"
+                    }
+                },
+
+                series: [{
+                    name: '代码总量',
+                    data: monthCode
+                }]
+            });
+
+        }
 
 
+    })
 
 
 </script>
+
 
 </html>

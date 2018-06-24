@@ -85,3 +85,26 @@ def get_no_summary_user():
     code_res = get_all_code(no_summary_user_list)
 
     return yesterday, today, code_res
+
+
+def not_in_date(much_list, small_list):
+    # 判断 是不是满足七天 不满足 就 添加代码量为 0
+    ext_list = []
+    for c in much_list:  # 全部的日期(多的那个)
+        if c not in small_list:  # 少的那个
+            ext_list.append((0, c))  # 生成一个不存在的列表
+    return ext_list
+
+
+def get_mounth_data(username, months=11):
+    month_code_list = []
+    if not isinstance(months, int):
+        return month_code_list
+    for i in range(5, months):
+        count = 0
+        res = models.Summary.objects.filter(user__username=username, create_time__month=i + 1).values_list("code")
+        for r in res:
+            count += r[0]
+        month_code_list.append(count)
+
+    return month_code_list

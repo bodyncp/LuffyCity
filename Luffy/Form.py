@@ -7,11 +7,10 @@ from Luffy.models import Module
 from Luffy.models import Types
 from Luffy.models import Team
 
-m_choices = Module.objects.all().values_list("nid", "module")
-t_choices = Team.objects.all().values_list("nid", "team_name")
-
 
 class UserFrom(forms.Form):
+    m_choices = Module.objects.all().values_list("nid", "module")
+    t_choices = Team.objects.all().values_list("nid", "team_name")
     user = forms.CharField(max_length=32, label="用户名",
                            error_messages={"required": "用户名不能为空"},
                            widget=widgets.TextInput(attrs={"class": "form-control"})
@@ -44,10 +43,10 @@ class UserFrom(forms.Form):
 
     # url = forms.URLField(max_length=64, label="博客地址", widget=widgets.URLInput(attrs={"class": "form-control"}))
 
-    modules = forms.ChoiceField(label="所属模块", choices=m_choices, initial=1,
+    modules_id = forms.ChoiceField(label="所属模块", choices=m_choices, initial=1,
                                 widget=widgets.Select(attrs={"class": "form-control"}))
 
-    teams = forms.ChoiceField(label="所属QQ组", choices=t_choices, initial=1,
+    teams_id = forms.ChoiceField(label="所属QQ组", choices=t_choices, initial=1,
                               widget=widgets.Select(attrs={"class": "form-control"}))
 
     def clean_user(self):
@@ -63,7 +62,7 @@ class UserFrom(forms.Form):
 
         if self.cleaned_data.get("invite_code") == 1234:
 
-            return self.cleaned_data.get("invite_code")
+            return True
 
         else:
             raise ValidationError("邀请码错误！")
@@ -71,7 +70,7 @@ class UserFrom(forms.Form):
     def clean(self):
 
         pwd = self.cleaned_data.get("pwd")
-        re_pwd = self.cleaned_data.get("re_pwd")
+        re_pwd = self.cleaned_data.pop("re_pwd")
         if pwd and re_pwd:
             if pwd == re_pwd:
                 return self.cleaned_data
@@ -80,10 +79,8 @@ class UserFrom(forms.Form):
         return self.cleaned_data
 
 
-ty_choice = Types.objects.all().values_list("nid", "classify")
-
-
 class SummaryForm(forms.Form):
+    ty_choice = Types.objects.all().values_list("nid", "classify")
     abstract = forms.CharField(max_length=64, label="内容摘要", error_messages={"required": "摘要不能为空"},
                                widget=widgets.TextInput(attrs={"class": "form-control"}))
 
@@ -101,3 +98,15 @@ class SummaryForm(forms.Form):
 
     types_id = forms.ChoiceField(label="所属类型", choices=ty_choice, initial=1,
                                  widget=widgets.Select(attrs={"class": "form-control"}))
+
+
+
+
+
+
+
+
+
+
+
+
