@@ -5,6 +5,8 @@ from django.contrib.auth.models import AbstractUser
 class UserInfo(AbstractUser):
     nid = models.AutoField(primary_key=True)
 
+    chinaName = models.CharField(verbose_name="姓名", max_length=16, null=True, default="需添加")
+
     phone = models.CharField(verbose_name="学员电话", max_length=11, null=True)
 
     signature = models.CharField(verbose_name="签名", max_length=32, default="如果你有理想的话,就努力去实现")
@@ -48,8 +50,6 @@ class Types(models.Model):
     nid = models.AutoField(primary_key=True)
 
     classify = models.CharField(verbose_name="总结分类", max_length=12, )
-
-    # ext = models.CharField(verbose_name="扩展字段", max_length=32, null=True)
 
     def __str__(self):
         return self.classify

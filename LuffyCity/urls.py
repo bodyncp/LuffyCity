@@ -22,8 +22,11 @@ from . import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     re_path(r"^index/$", views.index),
+    re_path(r"^index/(?P<team>\d+)/$", views.index),
     re_path(r"^login/$", views.login),
     re_path(r"^detail/$", views.detail),
+    re_path(r"^edit/$", views.editinfo),
+    re_path(r"^editmoteam/$", views.editmoteam),
     re_path(r"^$", views.login),
     re_path(r"^logout/$", views.logout),
     re_path(r"^register/$", views.register),

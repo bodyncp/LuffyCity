@@ -1,36 +1,53 @@
 import uuid
 import datetime
+import os
+from PIL import Image
 from django.shortcuts import render, HttpResponse, redirect
 from django.http import JsonResponse
 from django.contrib import auth
+from django.core.paginator import Paginator
+from django.core.paginator import EmptyPage
+from LuffyCity.settings import BASE_DIR
 from Luffy import models
 from django.contrib.auth.decorators import login_required
-from Luffy.Form import UserFrom, SummaryForm
+from Luffy.Form import UserFrom, SummaryForm, EditForm, EidtMoTeam
 from Luffy.Util import get_all_code, get_img, not_in_date
 from Luffy.Util import date_range, get_no_summary_user, get_month_data
 
 
 @login_required
-def index(request):
-    yesterday, today, code_res = get_no_summary_user()  # 可以分模块查询出没总结的同学
+def index(request, **kwargs):
+    user_obj = request.user
+    if kwargs:
+        team_id = kwargs.pop("team")
+        team = models.Team.objects.filter(nid=team_id).first()
+    else:
+        team = user_obj.teams
+    yesterday, today, code_res = get_no_summary_user(team=team)  # 可以分组块查询出没总结的同学
     code_res.sort(key=lambda x: x[1][1])
     code_res = code_res[:3]  # 获取后三名
     res = date_range()
     # res = 1
-    user = [request.user.username, ]
+    user = [user_obj.username, ]
     try:
         user_all_code = get_all_code(user)[0][1][1]  # 当前用户的代码量
     except Exception as e:
         user_all_code = 0
     code = request.session.get("count")
-
     # yesterday = str((datetime.datetime.now() - datetime.timedelta(days=1)).strftime("%Y-%m-%d"))
     # 可做分页展示
-    # 获取 全部总结  需要分模块查询
-    summary = models.Summary.objects.filter(create_time=yesterday).order_by("-code")
+    # 获取 全部总结  需要分组查询
+    summary = models.Summary.objects.filter(create_time=yesterday, user__teams=team).order_by("-code")
     # 取前四名 展示
-    summary1 = summary[0:4]
-
+    current_page_num = request.GET.get("page", default=1)
+    current_page_num = int(current_page_num)
+    paginator = Paginator(summary, 3)
+    try:
+        first_4_summary = paginator.page(current_page_num)
+    except EmptyPage as e:
+        current_page_num = 1
+        first_4_summary = paginator.page(current_page_num)
+    page_range = paginator.page_range
     try:
         # 查询出 最后代码量少的三位同学
         last_three_man_name = [user.user.username for user in summary.reverse()[:3]]
@@ -38,6 +55,7 @@ def index(request):
         last_three_man_name = [user.user.username for user in summary.reverse()]
     # 获取了他们的代码总量
     last_man_list = get_all_code(last_three_man_name)
+    teams = models.Team.objects.all()
     return render(request, "index.html", locals())
 
 
@@ -64,9 +82,13 @@ def register(request):
     form = UserFrom()
     return render(request, "register.html", locals())
 
-
 @login_required
 def getdata(request):
+    """
+    这个地方 用小组来查询展示
+    :param request:
+    :return:
+    """
     response = {}
     username_obj = models.UserInfo.objects.all()
     username_list = [username.username for username in username_obj]
@@ -107,6 +129,9 @@ def get_code(request):
 
 @login_required
 def summary(request):
+    res = date_range()
+    if not res:
+        return redirect("/index")
     form = SummaryForm()
     if request.method == "POST":
         form = SummaryForm(request.POST)
@@ -173,3 +198,57 @@ def detail(request):
     seven_days_summary = models.Summary.objects.filter(user__username=user).order_by("-create_time")[:7]
 
     return render(request, "detail.html", locals())
+
+
+@login_required
+def editinfo(request):
+    """
+    :param request:
+    :return:
+    """
+    if request.is_ajax():
+        response = {"status": True, "msg": None, "user": None}
+        form = EditForm(request.POST)
+        if form.is_valid():
+            nid = request.user.nid
+            username = form.cleaned_data.get("username")
+            extra_fields = form.cleaned_data
+            head_img_obj = request.FILES.get("file")
+            if head_img_obj:
+                print("head_img_obj", head_img_obj)
+                file_path = os.path.join(BASE_DIR, "Head")
+                head_img_obj.name = str(uuid.uuid4()) + ".png"
+                extra_fields["head_image"] = "Head/" + head_img_obj.name
+                img = Image.open(head_img_obj)
+                img.save(os.path.join(file_path, head_img_obj.name))
+
+            models.UserInfo.objects.filter(nid=nid).update(**extra_fields)
+        else:
+            response["status"] = False
+            response["msg"] = form.errors
+        return JsonResponse(response)
+    form = EditForm(initial={"modules": request.user.modules, "teams": request.user.teams})
+    return render(request, "editInfo.html", locals())
+
+
+def editmoteam(request):
+    """
+    修改用户的模块信息 后期 分组以及模块展示用
+    :param request:
+    :return:
+    """
+    user = request.GET.get("user")
+    username = request.user.username
+    if user == username:
+        if request.method == "GET":
+            user_obj = models.UserInfo.objects.filter(username=username).first()
+            form = EidtMoTeam(initial={"modules": user_obj.modules, "teams": user_obj.teams})
+            return render(request, "editmoteam.html", locals())
+        else:
+            form = EidtMoTeam(request.POST)
+            if form.is_valid():
+                extra_fields = form.cleaned_data
+                models.UserInfo.objects.filter(username=username).update(**extra_fields)
+            return redirect("/index/")
+    else:
+        return redirect("/login/")

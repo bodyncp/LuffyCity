@@ -2,17 +2,96 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>修改个人详情</title>
+    <title>修改个人信息</title>
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+    <style>
+        #headImg {
+            display: none;
+        }
+        #Img {
+            margin-left: 20px;
+            border: 1px solid black;
+            border-radius: 15px;
+        }
+    </style>
 </head>
-<body>
+<body style="background-image: url('/media/Head/register.png/');background-size: 100% 100%;">
 
-
-
-
-
-
-
-
+<h3 class="h3 text-success  col-lg-offset-5">修改个人信息</h3>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 col-lg-offset-3">
+            <form id="dataform">
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="form-group">
+                        <label for="{{ field.auto_id }}">{{ field.label }}</label>
+                        {{ field }}
+                        <span class="text-danger spanError pull-right"></span>
+                    </div>
+                {% endfor %}
+                <div class="form-group">
+                    <label for="headImg">选择头像</label>
+                    <label id="Img" for="headImg"><img width="40" height="40" id="imgsrc"
+                                                       src="/media/Head/default.png"></label>
+                    <input type="file" id="headImg">
+                </div>
+                <input type="button" value="确认" class="btn bg-primary pull-right" id="btn" style="margin-top: -50px">
+                <span class="text-danger codespan"
+                      style="display: inline-block; margin-top: 10px;margin-left: 5px"></span>
+            </form>
+        </div>
+    </div>
+</div>
 
 </body>
+<script src="/static/jquery/jquery-3.2.1.min.js"></script>
+<script>
+    $(function () {
+        //头像选择
+        $("#headImg").change(function () {
+            var file_obj = this.files[0];
+            var reader = new FileReader();
+            reader.readAsDataURL(file_obj);
+            reader.onload = function (ev) {
+                $("#imgsrc").attr("src", reader.result)
+            }
+        });
+        $("#btn").click(function () {
+            var dataform = new FormData();
+            dataform.append("file", $("#headImg")[0].files[0]);
+            var dataForm = $("#dataform").serializeArray();
+            $.each(dataForm, function (index, data) {
+                dataform.append(data.name, data.value)
+            });
+            console.log(dataForm);
+            $.ajax({
+                url: "",
+                type: "post",
+                contentType: false,
+                processData: false,
+                data: dataform,
+                success: function (data) {
+                    console.log(data);
+                    if (data.status) {
+                        location.href = "/login/"
+                    } else {
+                        var msg_dict = data.msg;
+                        console.log(msg_dict);
+                        $(".spanError").text("");
+                        $(".form-group").removeClass("has-error");
+                        $.each(msg_dict, function (name, value) {
+                            if (name == "__all__") {
+                                $("#id_re_pwd").next("span").text(value[0]).parent().addClass("has-error");
+                            }
+                            $("#id_" + name).next("span").text(value[0]).parent().addClass("has-error");
+                        })
+                    }
+                }
+
+            })
+        })
+    })
+
+</script>
 </html>
