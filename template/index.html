@@ -20,12 +20,26 @@
         <div class="collapse navbar-collapse" style="margin-right: 15px">
             <ul class="nav navbar-nav navbar-right">
                 <li style="margin-left: -15px"><a href="#"><span
-                        class="text-info"><strong><em>查看各个小组:</em></strong></span></a></li>
-                {% for foo in teams %}
-                    <li style="margin-left: -15px"><a href="/index/{{ foo.nid }}"><span
-                            class="text-warning"><strong><em>{{ foo.team_name }}</em></strong></span></a></li>
+                        class="text-info"><strong><em>查看各个模块:</em></strong></span></a></li>
+                {% for foo in modules %}
+                    {% if foo.nid == module.nid %}
+                        <li style="margin-left: -15px"><a href="/index/{{ foo.nid }}"><span
+                                class="text-warning text-danger "><strong><em>{{ foo.module }}</em></strong></span></a></li>
+
+                    {% else %}
+
+                        <li style="margin-left: -15px"><a href="/index/{{ foo.nid }}"><span
+                                class="text-warning "><strong><em>{{ foo.module }}</em></strong></span></a></li>
+                    {% endif %}
+
+
+
+
 
                 {% endfor %}
+
+
+
 
                 <li><a href="/detail/?user={{ request.user.username }}"><span
                         class="text-danger"><strong>当前登录用户:&nbsp;<em class="text-info">{{ request.user.username }}</em></strong></span></a>
@@ -123,7 +137,7 @@
                             {% if foo == current_page_num %}
                                 <li class="active"><a href="/index/?page={{ foo }}">{{ foo }} </a></li>
                             {% else %}
-                                <li class=""><a href="/index/?page={{ foo }}">{{ foo }} </a></li>
+                                <li class=""><a href="/index/{{ module.nid }}/?page={{ foo }}">{{ foo }} </a></li>
 
                             {% endif %}
                         {% endfor %}

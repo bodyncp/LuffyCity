@@ -1,0 +1,30 @@
+<div class="container">
+    <div class="row">
+        <div style="width: 300px;position: absolute;top: 250px;left: -50px">
+            <div class="panel panel-default">
+                <div class="panel-heading"><span class="text-danger"><strong>昨日没有总结的同学</strong></span></div>
+                <ul class="list-group">
+                    {% for u in code_res %}
+                        <li class="list-group-item">
+                            <span class="text-info">学员:{{ u.1.0 }}</span>&nbsp;
+                            <span class="text-danger">总代码量:{{ u.1.1 }}</span>&nbsp;
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div style="width: 300px ;position: absolute;top: 480px;left: -52px">
+            <div class="panel panel-default">
+                <div class="panel-heading "><span class="text-info">昨日代码总量有点少的学员 </span></div>
+                <ul class="list-group">
+                    {% for u in last_man_list %}
+                        <li class="list-group-item">
+                            <span class="text-danger"><a href="/detail/?user={{u.1.0 }}">学员:{{ u.1.0 }}</a></span>&nbsp;
+                            <span class="text-danger">总代码量:{{ u.1.1 }}</span>&nbsp;
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

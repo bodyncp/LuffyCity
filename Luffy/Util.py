@@ -73,14 +73,14 @@ def date_range():
     """
     now_date = int(datetime.datetime.now().strftime("%H%M"))
 
-    datarange = range(2100, 2300)
+    datarange = range(2100, 2358)
 
     res = 1 if now_date in datarange else 0
 
     return res
 
 
-def get_no_summary_user(team):  # 添加一个默认参数 后期分模块查询的时候使用
+def get_no_summary_user(module):  # 添加一个默认参数 后期分模块查询的时候使用
     """
     获取没有总结的用户对象 以及 他们的总代码量
     :param moudles:
@@ -89,11 +89,11 @@ def get_no_summary_user(team):  # 添加一个默认参数 后期分模块查询
     yesterday = str((datetime.datetime.now() - datetime.timedelta(days=1)).strftime("%Y-%m-%d"))
     today = str(datetime.datetime.now().strftime("%Y-%m-%d"))
     # 当前全部的用户对象   #  当前用户小组的
-    all_user = models.UserInfo.objects.filter(teams=team).filter(status=1).values_list("username")
+    all_user = models.UserInfo.objects.filter(modules=module).filter(status=1).values_list("username")
     # 组成一个用户 集合
     user_set = set([user[0] for user in all_user])
     # 当天的有总结的用户对象
-    today_user = models.Summary.objects.filter(user__teams=team).filter(create_time=yesterday).values_list("user__username")
+    today_user = models.Summary.objects.filter(user__modules=module).filter(create_time=yesterday).values_list("user__username")
     # 当天有总结的用户集合
     today_user_set = set([user[0] for user in today_user])
     # 获取没有总结的人的列表

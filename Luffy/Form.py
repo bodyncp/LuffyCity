@@ -10,8 +10,8 @@ from Luffy.models import Team
 
 
 class UserFrom(forms.Form):
-    user = forms.CharField(max_length=16, min_length=4,label="登录用户名",
-                           error_messages={"required": "登录用户名不能为空","min_length":"登录用户名最少需要四个字符"},
+    user = forms.CharField(max_length=16, min_length=4, label="登录用户名",
+                           error_messages={"required": "登录用户名不能为空", "min_length": "登录用户名最少需要四个字符"},
                            widget=widgets.TextInput(attrs={"class": "form-control"})
                            )
     chinaName = forms.CharField(max_length=32, label="真实姓名",
@@ -27,8 +27,8 @@ class UserFrom(forms.Form):
                                widget=widgets.Select(attrs={"class": "form-control"})
 
                                )
-    pwd = forms.CharField(max_length=16, label="密码",min_length=6,
-                          error_messages={"required": "密码不能为空","min_length":"密码最少需要六个字符"},
+    pwd = forms.CharField(max_length=16, label="密码", min_length=6,
+                          error_messages={"required": "密码不能为空", "min_length": "密码最少需要六个字符"},
                           widget=widgets.PasswordInput(attrs={"class": "form-control"})
                           )
 
@@ -131,6 +131,10 @@ class EidtMoTeam(forms.Form):
 
     teams = forms_model.ModelChoiceField(label="所属QQ组", queryset=Team.objects.all(), initial=3,
                                          widget=widgets.Select(attrs={"class": "form-control"}))
+
+
+
+
 
     """
     old_pwd = forms.CharField(max_length=32, label="旧密码",

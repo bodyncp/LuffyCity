@@ -19,25 +19,26 @@ from Luffy.Util import date_range, get_no_summary_user, get_month_data
 def index(request, **kwargs):
     user_obj = request.user
     if kwargs:
-        team_id = kwargs.pop("team")
-        team = models.Team.objects.filter(nid=team_id).first()
+        module_id = kwargs.pop("module")
+        module = models.Module.objects.filter(nid=module_id).first()
     else:
-        team = user_obj.teams
-    yesterday, today, code_res = get_no_summary_user(team=team)  # 可以分组块查询出没总结的同学
+        module = user_obj.modules
+    yesterday, today, code_res = get_no_summary_user(module=module)  # 可以分组块查询出没总结的同学
     code_res.sort(key=lambda x: x[1][1])
-    code_res = code_res[:3]  # 获取后三名
+    code_res = code_res  # 获取全部
     res = date_range()
     # res = 1
     user = [user_obj.username, ]
     try:
         user_all_code = get_all_code(user)[0][1][1]  # 当前用户的代码量
     except Exception as e:
+        print("Exception--->", e)
         user_all_code = 0
     code = request.session.get("count")
     # yesterday = str((datetime.datetime.now() - datetime.timedelta(days=1)).strftime("%Y-%m-%d"))
     # 可做分页展示
     # 获取 全部总结  需要分组查询
-    summary = models.Summary.objects.filter(create_time=yesterday, user__teams=team).order_by("-code")
+    summary = models.Summary.objects.filter(create_time=yesterday, user__modules=module).order_by("-code")
     # 取前四名 展示
     current_page_num = request.GET.get("page", default=1)
     current_page_num = int(current_page_num)
@@ -50,12 +51,13 @@ def index(request, **kwargs):
     page_range = paginator.page_range
     try:
         # 查询出 最后代码量少的三位同学
-        last_three_man_name = [user.user.username for user in summary.reverse()[:3]]
+        last_three_man_name = [user.user.username for user in summary.reverse()[:2]]  # 获取后两名
     except Exception as e:
+        print("Exception--->>>", e)
         last_three_man_name = [user.user.username for user in summary.reverse()]
     # 获取了他们的代码总量
     last_man_list = get_all_code(last_three_man_name)
-    teams = models.Team.objects.all()
+    modules = models.Module.objects.all()
     return render(request, "index.html", locals())
 
 

@@ -22,7 +22,7 @@ from . import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     re_path(r"^index/$", views.index),
-    re_path(r"^index/(?P<team>\d+)/$", views.index),
+    re_path(r"^index/(?P<module>\d+)/$", views.index),
     re_path(r"^login/$", views.login),
     re_path(r"^detail/$", views.detail),
     re_path(r"^edit/$", views.editinfo),

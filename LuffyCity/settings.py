@@ -71,31 +71,31 @@ WSGI_APPLICATION = 'LuffyCity.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'lufy',
-#         'HOST': '47.96.110.95',
-#         'PORT': '3306',
-#         'USER': 'root',
-#         'PASSWORD': '1234',
-#     }
-# }
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'Summary',
-        'HOST': '127.0.0.1',
+        'NAME': 'lufy',
+        'HOST': '47.96.110.95',
         'PORT': '3306',
         'USER': 'root',
-        'PASSWORD': '',
-        'OPTIONS': {
-            'autocommit': True,
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-        },
+        'PASSWORD': '1234',
     }
 }
+#
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'Summary',
+#         'HOST': '127.0.0.1',
+#         'PORT': '3306',
+#         'USER': 'root',
+#         'PASSWORD': '',
+#         'OPTIONS': {
+#             'autocommit': True,
+#             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+#         },
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
