@@ -63,8 +63,8 @@
                             <ul class="list-group">
                                 {% for u in code_res %}
                                     <li class="list-group-item">
-                                        <span class="text-info">学员:{{ u.1.0 }}</span>&nbsp;
-                                        <span class="text-danger">总代码量:{{ u.1.1 }}</span>&nbsp;
+                                        <span class="text-info">学员:{{ u.user__username }}</span>&nbsp;
+                                        <span class="text-danger">总代码量:{{ u.all_code }}</span>&nbsp;
                                     </li>
                                 {% endfor %}
                             </ul>
@@ -76,8 +76,8 @@
                             <ul class="list-group">
                                 {% for u in last_man_list %}
                                     <li class="list-group-item">
-                                        <span class="text-danger"><a href="/detail/?user={{ u.1.0 }}">学员:{{ u.1.0 }}</a></span>&nbsp;
-                                        <span class="text-danger">总代码量:{{ u.1.1 }}</span>&nbsp;
+                                        <span class="text-danger"><a href="/detail/?user={{ u.user__username }}">学员:{{ u.user__username }}</a></span>&nbsp;
+                                        <span class="text-danger">总代码量:{{ u.all_code }}</span>&nbsp;
                                     </li>
                                 {% endfor %}
                             </ul>

@@ -24,18 +24,16 @@ def index(request, **kwargs):
     else:
         module = user_obj.modules
     yesterday, today, code_res = get_no_summary_user(module=module)  # 可以分组块查询出没总结的同学
-    code_res.sort(key=lambda x: x[1][1])
-    code_res = code_res  # 获取全部
     res = date_range()
     # res = 1
     user = [user_obj.username, ]
     try:
-        user_all_code = get_all_code(user)[0][1][1]  # 当前用户的代码量
+        user_all_code = get_all_code(user)[0].get("all_code")
+        # 当前用户的代码量
     except Exception as e:
-        print("Exception--->", e)
+        print("Exception-index-->", e)
         user_all_code = 0
     code = request.session.get("count")
-    # yesterday = str((datetime.datetime.now() - datetime.timedelta(days=1)).strftime("%Y-%m-%d"))
     # 可做分页展示
     # 获取 全部总结  需要分组查询
     summary = models.Summary.objects.filter(create_time=yesterday, user__modules=module).order_by("-code")
@@ -49,12 +47,10 @@ def index(request, **kwargs):
         current_page_num = 1
         first_4_summary = paginator.page(current_page_num)
     page_range = paginator.page_range
-    try:
-        # 查询出 最后代码量少的三位同学
-        last_three_man_name = [user.user.username for user in summary.reverse()[:2]]  # 获取后两名
-    except Exception as e:
-        print("Exception--->>>", e)
-        last_three_man_name = [user.user.username for user in summary.reverse()]
+
+    # 查询出 最后代码量少的三位同学
+    last_three_man_name = [user.user.username for user in summary.reverse()[:2]]  # 获取后两名
+
     # 获取了他们的代码总量
     last_man_list = get_all_code(last_three_man_name)
     modules = models.Module.objects.all()
@@ -87,7 +83,7 @@ def register(request):
 @login_required
 def getdata(request):
     """
-    这个地方 用小组来查询展示
+
     :param request:
     :return:
     """

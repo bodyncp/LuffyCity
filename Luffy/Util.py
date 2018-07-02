@@ -1,6 +1,7 @@
 # _*_ coding:utf-8 _*_
 # __author__Zj__
 
+from django.db.models import Sum
 import random
 from PIL import Image
 from io import BytesIO
@@ -10,31 +11,25 @@ from Luffy import models
 import datetime
 
 
-def get_all_code(name_list, chart=False):
+def get_all_code(name_list: list, chart=False):
     """
     查询出来列表里的人的代码总量的总共的代码量
     :param name_list: username list
     :param chart: ajax or not
     :return:
     """
-    man_all_code = models.Summary.objects.filter(user__username__in=name_list).values("user__username", "code")
-    man_all_code_dict = {}
+    if not isinstance(name_list, list):
+        raise TypeError("must list")
 
-    for name in man_all_code:
-        man_all_code_dict[name.get("user__username")] = 0
-    for name2 in man_all_code:
-        man_all_code_dict[name2.get("user__username")] += name2.get("code")
-
-    man_all_code_list = []
-    for item in enumerate(man_all_code_dict.items()):
-        man_all_code_list.append(item)  # 不是ajax的格式:(1, ('jack', 30))
+    man_all_code_dict = models.Summary.objects.filter(user__username__in=name_list).values("user__username").annotate(
+        all_code=Sum("code")).values("user__username", "all_code").order_by("-all_code")
     if chart:
         ajax_list = []
-        for i in man_all_code_list:
-            ajax_list.append(list(i[1]))
+        for obj in man_all_code_dict:
+            ajax_list.append([obj.get("user__username"), obj.get("all_code")])
         return ajax_list
     else:
-        return man_all_code_list
+        return man_all_code_dict
 
 
 def get3random(simple=False):
@@ -93,7 +88,8 @@ def get_no_summary_user(module):  # 添加一个默认参数 后期分模块查�
     # 组成一个用户 集合
     user_set = set([user[0] for user in all_user])
     # 当天的有总结的用户对象
-    today_user = models.Summary.objects.filter(user__modules=module).filter(create_time=yesterday).values_list("user__username")
+    today_user = models.Summary.objects.filter(user__modules=module).filter(create_time=yesterday).values_list(
+        "user__username")
     # 当天有总结的用户集合
     today_user_set = set([user[0] for user in today_user])
     # 获取没有总结的人的列表
