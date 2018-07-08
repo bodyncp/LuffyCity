@@ -254,8 +254,6 @@ def editmoteam(request):
 
 
 def page_error(request):
-
-
     """
     :param request:
     :return:
