@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, re_path
+from django.conf import urls
 from Luffy import views
 from django.views.static import serve
 from . import settings
@@ -36,3 +37,4 @@ urlpatterns = [
     re_path(r'^media/(?P<path>.*)/$', serve, {"document_root": settings.MEDIA_ROOT}),
 
 ]
+urls.handler400 = views.page_error

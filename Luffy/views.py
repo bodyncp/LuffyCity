@@ -80,6 +80,7 @@ def register(request):
     form = UserFrom()
     return render(request, "register.html", locals())
 
+
 @login_required
 def getdata(request):
     """
@@ -250,3 +251,12 @@ def editmoteam(request):
             return redirect("/index/")
     else:
         return redirect("/login/")
+
+
+def page_error(request):
+    """
+    :param request:
+    :return:
+    :function: 错误重定向
+    """
+    return render(request, '404.html')
