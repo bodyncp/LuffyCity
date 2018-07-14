@@ -311,3 +311,4 @@ def page_error(request):
     :function: 错误重定向
     """
     return render(request, '404.html')
+# xxxxxxxx
