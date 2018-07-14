@@ -7,8 +7,10 @@ from django.http import JsonResponse
 from django.contrib import auth
 from django.core.paginator import Paginator
 from django.core.paginator import EmptyPage
+from django.core.mail import send_mail
 from LuffyCity.settings import BASE_DIR
 from Luffy import models
+from LuffyCity import settings
 from django.contrib.auth.decorators import login_required
 from Luffy.Form import UserFrom, SummaryForm, EditForm, EidtMoTeam
 from Luffy.Util import get_all_code, get_img, not_in_date
@@ -251,6 +253,55 @@ def editmoteam(request):
             return redirect("/index/")
     else:
         return redirect("/login/")
+
+
+def get_str_code(request):
+    """
+    :param request:
+    :return:
+    :fucntion: 通过邮箱发送验证码
+    """
+    if request.method == 'POST':
+        user = request.POST.get('user')
+        try:
+            obj = models.UserInfo.objects.get(username=user)
+            email = obj.email
+            if email:
+                code_str = get_img()[0]
+                request.session['email_code'] = code_str
+                # 未发现报错原因，报错类型是编码错误，但是能获取到邮件
+                import threading
+                t = threading.Thread(target=send_mail, args=("您的修改密码申请",
+                                                             "您的验证码:%s" % code_str,
+                                                             settings.EMAIL_HOST_USER,
+                                                             [email])
+                                     )
+                t.start()
+            else:
+                return JsonResponse({'err_msg': '邮箱不存在'})
+        except:
+            return JsonResponse({'err_msg': '邮箱或账户不存在'})
+    return render(request, 'modify_pwd.html')
+
+
+def forget_pwd(request):
+    """
+    :param request:
+    :return:
+    :function: 修改用户密码
+    """
+    if request.method == 'POST':
+        user = request.POST.get('user')
+        password = request.POST.get('agent_pwd')
+        email_code = request.POST.get('email_code')
+        if email_code.upper() == request.session.get('email_code').upper():
+            user_set = models.UserInfo.objects.get(username=user)
+            user_set.set_password(password)
+            user_set.save()
+            return JsonResponse({'info': '1'})
+        else:
+            return JsonResponse({'err_msg': '验证码错误，请重新申请'})
+    return render(request, 'modify_pwd.html')
 
 
 def page_error(request):

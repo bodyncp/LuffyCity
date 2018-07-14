@@ -1,10 +1,129 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>$Title$</title>
+    <!-- meta -->
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="renderer" content="webkit"/>
+
+    <title>Luffy</title>
+    <link rel="stylesheet" type="text/css" href="/media/static/css/modify_pwd.css">
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
 </head>
+
 <body>
-$END$
+<input type="hidden" value="" id="isVisiable_request_form_verifyCode"/>
+<!-- 页面主体START -->
+<header class="sso_header">
+    <a href="#"><p style="color: white;font-size: 28px;margin-left: 440px;margin-top: 100px;float: left">Luffy</p>
+    </a>
+</header>
+<section class="content_box cleafix">
+    <div class="left_area fl">
+        <span></span>
+        <form>
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="exampleInputEmail1">用户名</label>
+                <input type="email" class="form-control" id="user" placeholder="user"><span></span>
+            </div>
+            <div class="form-group">
+                <label for="exampleInputPassword1">输入您的新密码</label>
+                <input type="password" class="form-control" id="pwd" placeholder="password"><span></span>
+            </div>
+            <div class="form-group">
+                <label for="exampleInputPassword1">确认您的新密码</label>
+                <input type="password" class="form-control" id="agent_pwd" placeholder="agent_pwd">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputPassword1">获取邮箱验证码</label>
+                <input type="password" class="form-control" id="email" style="width: 200px;float: left">
+                <input type="button" value="点击获取" class="btn btn-danger btn_email" id="email_code" style="height: 30px;margin-left: 108px;margin-top: 25px;position: absolute"><span style="display: block;margin-top: 35px"></span>
+            </div>
+            <div class="form-group">
+                <input type="button" class="form-control btn btn-success btn_commit" value="提交修改" style="margin-top: 15px">
+            </div>
+            <p class="pull-right" style="color: red;display: none" id="ending">修改成功，即将跳转</p>
+        </form>
+
+    </div>
+
+</section>
+
 </body>
+<script src="/media/static/jquery/jquery-3.2.1.min.js"></script>
+<script>
+    // 提交验证码请求
+    $(".btn_email").click(function () {
+        console.log($("#user").val());
+        $.ajax({
+            url : '/get_str_code/',
+            type : 'post',
+            data : {
+                user : $("#user").val(),
+                csrfmiddlewaretoken : $("[name='csrfmiddlewaretoken']").val()
+            },
+            success : function (data) {
+                if (data){
+                    $("span").text("");
+                    $("#user").removeClass("has-error");
+                    $(".btn_email").removeClass("has-error");
+
+                    $("#user").next().text(data.err_msg);
+                    $("#user").addClass("has-error");
+                    $(".btn_email").next().text(data.err_msg);
+                    $(".btn_email").addClass("has-error");
+                }
+            }
+        })
+    });
+
+    // 提交修改请求
+    $(".btn_commit").click(function () {
+        $("span").text("");
+        var user = $("#user").val();
+        var password = $("#pwd").val();
+        var agent_pwd = $("#agent_pwd").val();
+        var email_code = $("#email").val();
+        var a = [user,password,agent_pwd,email_code];
+        var b = [$("#user"),$("#pwd"),$("#agent_pwd"),$("#email")]
+        if (user == '' || password == '' || agent_pwd == '' || email_code == ''){
+            for (var i=0;i<=a.length;i++){
+                if (a[i] == ''){
+                    $(b[i]).next().text("该字段不能为空")
+
+                }
+            }
+            return;
+        }
+
+        if (password != agent_pwd){
+            $('#pwd').next().text('密码不一致');
+        }else {
+            $.ajax({
+                url : '/forget_pwd/',
+                type : 'post',
+                data : {
+                    user : $("#user").val(),
+                    password : password,
+                    agent_pwd : agent_pwd,
+                    email_code : $("#email").val(),
+                    csrfmiddlewaretoken : $("[name='csrfmiddlewaretoken']").val()
+                },
+                success : function (data) {
+                    if (data.err_msg){
+                        $("#email_code").next().text(data.err_msg)
+                    }else {
+                        if(data.info){
+                            $("#ending").css('display','block');
+                            setTimeout(window.location.href = "/", 3000)
+                        }
+                    }
+                }
+            })
+        }
+
+    })
+
+</script>
 </html>

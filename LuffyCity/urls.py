@@ -25,6 +25,8 @@ urlpatterns = [
     re_path(r"^index/$", views.index),
     re_path(r"^index/(?P<module>\d+)/$", views.index),
     re_path(r"^login/$", views.login),
+    re_path(r"^forget_pwd/$", views.forget_pwd),
+    re_path(r"^get_str_code/$", views.get_str_code),
     re_path(r"^detail/$", views.detail),
     re_path(r"^edit/$", views.editinfo),
     re_path(r"^editmoteam/$", views.editmoteam),

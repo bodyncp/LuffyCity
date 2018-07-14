@@ -22,7 +22,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'w8y@i+0gg6)6rjf)vl9$na0@fxl(8mf$jn(#_73&$6q_xpw6j2'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["47.96.110.95", '127.0.0.1']
 
@@ -148,3 +148,9 @@ MEDIA_URL = "/media/"
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_COOKIE_AGE = 60 * 60 * 20
 # STATIC_ROOT = os.path.join(BASE_DIR, "/static/")
+
+EMAIL_HOST = 'smtp.qq.com'  # 如果是 163 改成 smtp.163.com
+EMAIL_PORT = 465
+EMAIL_HOST_USER = '529505291@qq.com'           # 帐号
+EMAIL_HOST_PASSWORD = 'regfmebytsaxcaci'  # 密码
+EMAIL_USE_SSL = True
