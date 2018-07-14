@@ -24,21 +24,23 @@
         <form>
             {% csrf_token %}
             <div class="form-group">
-                <label for="exampleInputEmail1">用户名</label>
-                <input type="email" class="form-control" id="user" placeholder="user"><span></span>
+                <label for="user">用户名</label>
+                <input type="email" class="form-control user" id="user" placeholder="user"><span></span>
             </div>
             <div class="form-group">
-                <label for="exampleInputPassword1">输入您的新密码</label>
+                <label for="pwd">输入您的新密码</label>
                 <input type="password" class="form-control" id="pwd" placeholder="password"><span></span>
             </div>
             <div class="form-group">
-                <label for="exampleInputPassword1">确认您的新密码</label>
+                <label for="agent_pwd">确认您的新密码</label>
                 <input type="password" class="form-control" id="agent_pwd" placeholder="agent_pwd">
+                <span></span>
             </div>
             <div class="form-group">
-                <label for="exampleInputPassword1">获取邮箱验证码</label>
-                <input type="password" class="form-control" id="email" style="width: 200px;float: left">
-                <input type="button" value="点击获取" class="btn btn-danger btn_email" id="email_code" style="height: 30px;margin-left: 108px;margin-top: 25px;position: absolute"><span style="display: block;margin-top: 35px"></span>
+                <label for="email">获取邮箱验证码</label>
+                <input type="text" class="form-control" id="email" style="width: 200px;float: left"><span></span>
+                <input type="button" value="点击获取" class="btn btn-danger btn_email " id="email_code" style="height: 30px;margin-left: 108px;margin-top: 25px;position: absolute">
+                <span style="display: block;margin-top: 35px"></span>
             </div>
             <div class="form-group">
                 <input type="button" class="form-control btn btn-success btn_commit" value="提交修改" style="margin-top: 15px">
@@ -55,7 +57,14 @@
 <script>
     // 提交验证码请求
     $(".btn_email").click(function () {
-        console.log($("#user").val());
+
+        $("span").text("");
+        var sendStr=$(this);
+        var user = $(".user");
+        var email = $(".btn_email");
+        user.removeClass("has-error");
+        email.removeClass("has-error");
+
         $.ajax({
             url : '/get_str_code/',
             type : 'post',
@@ -64,15 +73,12 @@
                 csrfmiddlewaretoken : $("[name='csrfmiddlewaretoken']").val()
             },
             success : function (data) {
-                if (data){
-                    $("span").text("");
-                    $("#user").removeClass("has-error");
-                    $(".btn_email").removeClass("has-error");
+                if (!data.status){
+                   user.next().text(data.err_msg).addClass("text-danger has-error");
+                   email.next().text(data.err_msg).addClass("text-danger has-error");
+                }else {
+                    sendStr.removeClass("btn-danger").addClass("disabled btn-default").val("已发送验证码")
 
-                    $("#user").next().text(data.err_msg);
-                    $("#user").addClass("has-error");
-                    $(".btn_email").next().text(data.err_msg);
-                    $(".btn_email").addClass("has-error");
                 }
             }
         })
@@ -81,40 +87,40 @@
     // 提交修改请求
     $(".btn_commit").click(function () {
         $("span").text("");
-        var user = $("#user").val();
-        var password = $("#pwd").val();
-        var agent_pwd = $("#agent_pwd").val();
-        var email_code = $("#email").val();
-        var a = [user,password,agent_pwd,email_code];
-        var b = [$("#user"),$("#pwd"),$("#agent_pwd"),$("#email")]
-        if (user == '' || password == '' || agent_pwd == '' || email_code == ''){
+        var user = $("#user");
+        var password = $("#pwd");
+        var agent_pwd = $("#agent_pwd");
+        var email_code = $("#email");
+        var a = [user.val(),password.val(),agent_pwd.val(),email_code.val()];
+        var b = [user,password,agent_pwd,email_code]
+        if (user.val() == '' || password.val() == '' || agent_pwd.val() == '' || email_code.val() == ''){
             for (var i=0;i<=a.length;i++){
                 if (a[i] == ''){
-                    $(b[i]).next().text("该字段不能为空")
-
+                    console.log(b[i])
+                    b[i].next().text("该字段不能为空").addClass("text-danger")
                 }
             }
             return;
         }
 
-        if (password != agent_pwd){
-            $('#pwd').next().text('密码不一致');
+        if (password.val() != agent_pwd.val()){
+            password.next().text('密码不一致').addClass("text-danger");
         }else {
             $.ajax({
                 url : '/forget_pwd/',
                 type : 'post',
                 data : {
-                    user : $("#user").val(),
+                    user : user.val(),
                     password : password,
                     agent_pwd : agent_pwd,
-                    email_code : $("#email").val(),
+                    email_code : email_code.val(),
                     csrfmiddlewaretoken : $("[name='csrfmiddlewaretoken']").val()
                 },
                 success : function (data) {
-                    if (data.err_msg){
-                        $("#email_code").next().text(data.err_msg)
+                    if (!data.status){
+                        $("#email_code").next().text(data.err_msg).addClass("text-danger")
                     }else {
-                        if(data.info){
+                        if(data.status){
                             $("#ending").css('display','block');
                             setTimeout(window.location.href = "/", 3000)
                         }

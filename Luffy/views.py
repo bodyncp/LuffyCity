@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import uuid
 import datetime
 import os
@@ -262,6 +263,8 @@ def get_str_code(request):
     :fucntion: 通过邮箱发送验证码
     """
     if request.method == 'POST':
+
+        response = {"status": True, "err_msg": None}
         user = request.POST.get('user')
         try:
             obj = models.UserInfo.objects.get(username=user)
@@ -269,7 +272,7 @@ def get_str_code(request):
             if email:
                 code_str = get_img()[0]
                 request.session['email_code'] = code_str
-                # 未发现报错原因，报错类型是编码错误，但是能获取到邮件
+
                 import threading
                 t = threading.Thread(target=send_mail, args=("您的修改密码申请",
                                                              "您的验证码:%s" % code_str,
@@ -277,10 +280,16 @@ def get_str_code(request):
                                                              [email])
                                      )
                 t.start()
+                return JsonResponse(response)
             else:
-                return JsonResponse({'err_msg': '邮箱不存在'})
-        except:
-            return JsonResponse({'err_msg': '邮箱或账户不存在'})
+                response["status"] = False
+                response['err_msg'] = "该用户邮箱不存在"
+                return JsonResponse(response)
+        except Exception as e:
+            print(e)
+            response["status"] = False
+            response['err_msg'] = "邮箱或账户不存在"
+            return JsonResponse(response)
     return render(request, 'modify_pwd.html')
 
 
@@ -291,6 +300,7 @@ def forget_pwd(request):
     :function: 修改用户密码
     """
     if request.method == 'POST':
+        response = {"status": True, "err_msg": None}
         user = request.POST.get('user')
         password = request.POST.get('agent_pwd')
         email_code = request.POST.get('email_code')
@@ -298,16 +308,22 @@ def forget_pwd(request):
             user_set = models.UserInfo.objects.get(username=user)
             user_set.set_password(password)
             user_set.save()
-            return JsonResponse({'info': '1'})
+
+            return JsonResponse(response)
         else:
-            return JsonResponse({'err_msg': '验证码错误，请重新申请'})
+            response["status"] = False
+            response["err_msg"] = "验证码错误，请刷新后重新申请"
+
+            return JsonResponse(response)
     return render(request, 'modify_pwd.html')
 
 
 def page_error(request):
     """
+
+
+
     :param request:
     :return:
-    :function: 错误重定向
     """
     return render(request, '404.html')
