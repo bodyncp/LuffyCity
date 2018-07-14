@@ -2,6 +2,7 @@
 import uuid
 import datetime
 import os
+import threading
 from PIL import Image
 from django.shortcuts import render, HttpResponse, redirect
 from django.http import JsonResponse
@@ -273,7 +274,6 @@ def get_str_code(request):
                 code_str = get_img()[0]
                 request.session['email_code'] = code_str
 
-                import threading
                 t = threading.Thread(target=send_mail, args=("您的修改密码申请",
                                                              "您的验证码:%s" % code_str,
                                                              settings.EMAIL_HOST_USER,
@@ -304,7 +304,7 @@ def forget_pwd(request):
         user = request.POST.get('user')
         password = request.POST.get('agent_pwd')
         email_code = request.POST.get('email_code')
-        if email_code.upper() == request.session.get('email_code').upper():
+        if email_code.upper() == request.session.get('email_code', 'x').upper():
             user_set = models.UserInfo.objects.get(username=user)
             user_set.set_password(password)
             user_set.save()
@@ -320,9 +320,6 @@ def forget_pwd(request):
 
 def page_error(request):
     """
-
-
-
     :param request:
     :return:
     """

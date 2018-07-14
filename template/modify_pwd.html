@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
     <meta name="renderer" content="webkit"/>
 
-    <title>Luffy</title>
+    <title>找回密码</title>
     <link rel="stylesheet" type="text/css" href="/media/static/css/modify_pwd.css">
     <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
 </head>
@@ -15,7 +15,7 @@
 <input type="hidden" value="" id="isVisiable_request_form_verifyCode"/>
 <!-- 页面主体START -->
 <header class="sso_header">
-    <a href="#"><p style="color: white;font-size: 28px;margin-left: 440px;margin-top: 100px;float: left">Luffy</p>
+    <a href="#"><h5 style="color: white;font-size: 28px;margin-left: 440px;margin-top: 100px;float: left" ><span class="text-danger"><em><strong>您正在找回密码</strong></em></span></h5>
     </a>
 </header>
 <section class="content_box cleafix">
@@ -25,20 +25,20 @@
             {% csrf_token %}
             <div class="form-group">
                 <label for="user">用户名</label>
-                <input type="email" class="form-control user" id="user" placeholder="user"><span></span>
+                <input type="email" class="form-control user" id="user" placeholder="用户名"><span></span>
             </div>
             <div class="form-group">
                 <label for="pwd">输入您的新密码</label>
-                <input type="password" class="form-control" id="pwd" placeholder="password"><span></span>
+                <input type="password" class="form-control" id="pwd" placeholder="密码"><span></span>
             </div>
             <div class="form-group">
                 <label for="agent_pwd">确认您的新密码</label>
-                <input type="password" class="form-control" id="agent_pwd" placeholder="agent_pwd">
+                <input type="password" class="form-control" id="agent_pwd" placeholder="确认密码">
                 <span></span>
             </div>
             <div class="form-group">
                 <label for="email">获取邮箱验证码</label>
-                <input type="text" class="form-control" id="email" style="width: 200px;float: left"><span></span>
+                <input type="text" class="form-control" id="email" placeholder="邮箱验证码" style="width: 200px;float: left"><span></span>
                 <input type="button" value="点击获取" class="btn btn-danger btn_email " id="email_code" style="height: 30px;margin-left: 108px;margin-top: 25px;position: absolute">
                 <span style="display: block;margin-top: 35px"></span>
             </div>
@@ -106,7 +106,7 @@
         if (password.val() != agent_pwd.val()){
             password.next().text('密码不一致').addClass("text-danger");
         }else {
-            console.log("xxxxx");
+
             $.ajax({
                 url : '/forget_pwd/',
                 type : 'post',
