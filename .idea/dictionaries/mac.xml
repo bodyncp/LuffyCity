@@ -2,6 +2,7 @@
   <dictionary name="mac">
     <words>
       <w>chinaname</w>
+      <w>csrfmiddlewaretoken</w>
       <w>datarange</w>
       <w>editinfo</w>
       <w>editmoteam</w>

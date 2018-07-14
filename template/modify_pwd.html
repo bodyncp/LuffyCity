@@ -106,17 +106,19 @@
         if (password.val() != agent_pwd.val()){
             password.next().text('密码不一致').addClass("text-danger");
         }else {
+            console.log("xxxxx");
             $.ajax({
                 url : '/forget_pwd/',
                 type : 'post',
                 data : {
                     user : user.val(),
-                    password : password,
-                    agent_pwd : agent_pwd,
+                    password : password.val(),
+                    agent_pwd : agent_pwd.val(),
                     email_code : email_code.val(),
                     csrfmiddlewaretoken : $("[name='csrfmiddlewaretoken']").val()
                 },
                 success : function (data) {
+                    console.log(data)
                     if (!data.status){
                         $("#email_code").next().text(data.err_msg).addClass("text-danger")
                     }else {
