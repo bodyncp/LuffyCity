@@ -15,7 +15,8 @@
 <input type="hidden" value="" id="isVisiable_request_form_verifyCode"/>
 <!-- 页面主体START -->
 <header class="sso_header">
-    <a href="#"><h5 style="color: white;font-size: 28px;margin-left: 440px;margin-top: 100px;float: left" ><span class="text-danger"><em><strong>您正在找回密码</strong></em></span></h5>
+    <a href="#"><h5 style="color: white;font-size: 28px;margin-left: 440px;margin-top: 100px;float: left"><span
+            class="text-danger"><em><strong>您正在找回密码</strong></em></span></h5>
     </a>
 </header>
 <section class="content_box cleafix">
@@ -39,11 +40,13 @@
             <div class="form-group">
                 <label for="email">获取邮箱验证码</label>
                 <input type="text" class="form-control" id="email" placeholder="邮箱验证码" style="width: 200px;float: left"><span></span>
-                <input type="button" value="点击获取" class="btn btn-danger btn_email " id="email_code" style="height: 30px;margin-left: 108px;margin-top: 25px;position: absolute">
+                <input type="button" value="点击获取" class="btn btn-danger btn_email " id="email_code"
+                       style="height: 30px;margin-left: 108px;margin-top: 25px;position: absolute">
                 <span style="display: block;margin-top: 35px"></span>
             </div>
             <div class="form-group">
-                <input type="button" class="form-control btn btn-success btn_commit" value="提交修改" style="margin-top: 15px">
+                <input type="button" class="form-control btn btn-success btn_commit" value="提交修改"
+                       style="margin-top: 15px">
             </div>
             <p class="pull-right" style="color: red;display: none" id="ending">修改成功，即将跳转</p>
         </form>
@@ -55,33 +58,53 @@
 </body>
 <script src="/media/static/jquery/jquery-3.2.1.min.js"></script>
 <script>
+
     // 提交验证码请求
+    var flag = true;
     $(".btn_email").click(function () {
-
-        $("span").text("");
-        var sendStr=$(this);
-        var user = $(".user");
-        var email = $(".btn_email");
-        user.removeClass("has-error");
-        email.removeClass("has-error");
-
-        $.ajax({
-            url : '/get_str_code/',
-            type : 'post',
-            data : {
-                user : $("#user").val(),
-                csrfmiddlewaretoken : $("[name='csrfmiddlewaretoken']").val()
-            },
-            success : function (data) {
-                if (!data.status){
-                   user.next().text(data.err_msg).addClass("text-danger has-error");
-                   email.next().text(data.err_msg).addClass("text-danger has-error");
-                }else {
-                    sendStr.removeClass("btn-danger").addClass("disabled btn-default").val("已发送验证码")
-
+        if (flag) {
+            var sec = 15;
+            func();
+            flag = false;
+            var intr = setInterval(function () {
+                if (sec > 0) {
+                    $(".btn_email").val("等待" + sec + "s");
+                    sec--
+                } else {
+                    clearInterval(intr);
+                    $(".btn_email").val("点击获取");
                 }
-            }
-        })
+            },1000);
+            var timeout = setTimeout(function () {
+                flag = true;
+            }, 15000);
+            clearTimeout(null)
+        }
+
+        function func() {
+            $("span").text("");
+            var sendStr = $(this);
+            var user = $(".user");
+            var email = $(".btn_email");
+            user.removeClass("has-error");
+            email.removeClass("has-error");
+
+            $.ajax({
+                url: '/get_str_code/',
+                type: 'post',
+                data: {
+                    user: $("#user").val(),
+                    csrfmiddlewaretoken: $("[name='csrfmiddlewaretoken']").val()
+                },
+                success: function (data) {
+                    if (!data.status) {
+                        user.next().text(data.err_msg).addClass("text-danger has-error");
+                        email.next().text(data.err_msg).addClass("text-danger has-error");
+                    }
+                }
+            })
+        }
+
     });
 
     // 提交修改请求
@@ -91,11 +114,11 @@
         var password = $("#pwd");
         var agent_pwd = $("#agent_pwd");
         var email_code = $("#email");
-        var a = [user.val(),password.val(),agent_pwd.val(),email_code.val()];
-        var b = [user,password,agent_pwd,email_code]
-        if (user.val() == '' || password.val() == '' || agent_pwd.val() == '' || email_code.val() == ''){
-            for (var i=0;i<=a.length;i++){
-                if (a[i] == ''){
+        var a = [user.val(), password.val(), agent_pwd.val(), email_code.val()];
+        var b = [user, password, agent_pwd, email_code]
+        if (user.val() == '' || password.val() == '' || agent_pwd.val() == '' || email_code.val() == '') {
+            for (var i = 0; i <= a.length; i++) {
+                if (a[i] == '') {
                     console.log(b[i])
                     b[i].next().text("该字段不能为空").addClass("text-danger")
                 }
@@ -103,27 +126,27 @@
             return;
         }
 
-        if (password.val() != agent_pwd.val()){
+        if (password.val() != agent_pwd.val()) {
             password.next().text('密码不一致').addClass("text-danger");
-        }else {
+        } else {
 
             $.ajax({
-                url : '/forget_pwd/',
-                type : 'post',
-                data : {
-                    user : user.val(),
-                    password : password.val(),
-                    agent_pwd : agent_pwd.val(),
-                    email_code : email_code.val(),
-                    csrfmiddlewaretoken : $("[name='csrfmiddlewaretoken']").val()
+                url: '/forget_pwd/',
+                type: 'post',
+                data: {
+                    user: user.val(),
+                    password: password.val(),
+                    agent_pwd: agent_pwd.val(),
+                    email_code: email_code.val(),
+                    csrfmiddlewaretoken: $("[name='csrfmiddlewaretoken']").val()
                 },
-                success : function (data) {
+                success: function (data) {
                     console.log(data)
-                    if (!data.status){
+                    if (!data.status) {
                         $("#email_code").next().text(data.err_msg).addClass("text-danger")
-                    }else {
-                        if(data.status){
-                            $("#ending").css('display','block');
+                    } else {
+                        if (data.status) {
+                            $("#ending").css('display', 'block');
                             setTimeout(window.location.href = "/", 3000)
                         }
                     }
