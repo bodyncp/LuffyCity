@@ -39,7 +39,7 @@
             </div>
             <div class="form-group">
                 <label for="email">获取邮箱验证码</label>
-                <input type="text" class="form-control" id="email" placeholder="邮箱验证码" style="width: 200px;float: left"><span></span>
+                <input type="text" class="form-control" id="email" placeholder="邮箱验证码" style="width: 200px;float: left">
                 <input type="button" value="点击获取" class="btn btn-danger btn_email " id="email_code"
                        style="height: 30px;margin-left: 108px;margin-top: 25px;position: absolute">
                 <span style="display: block;margin-top: 35px"></span>
@@ -74,7 +74,7 @@
                     clearInterval(intr);
                     $(".btn_email").val("点击获取");
                 }
-            },1000);
+            }, 1000);
             var timeout = setTimeout(function () {
                 flag = true;
             }, 15000);
@@ -115,11 +115,10 @@
         var agent_pwd = $("#agent_pwd");
         var email_code = $("#email");
         var a = [user.val(), password.val(), agent_pwd.val(), email_code.val()];
-        var b = [user, password, agent_pwd, email_code]
+        var b = [user, password, agent_pwd, email_code];
         if (user.val() == '' || password.val() == '' || agent_pwd.val() == '' || email_code.val() == '') {
             for (var i = 0; i <= a.length; i++) {
                 if (a[i] == '') {
-                    console.log(b[i])
                     b[i].next().text("该字段不能为空").addClass("text-danger")
                 }
             }
@@ -141,14 +140,8 @@
                     csrfmiddlewaretoken: $("[name='csrfmiddlewaretoken']").val()
                 },
                 success: function (data) {
-                    console.log(data)
                     if (!data.status) {
                         $("#email_code").next().text(data.err_msg).addClass("text-danger")
-                    } else {
-                        if (data.status) {
-                            $("#ending").css('display', 'block');
-                            setTimeout(window.location.href = "/", 3000)
-                        }
                     }
                 }
             })
