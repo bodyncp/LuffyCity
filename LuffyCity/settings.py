@@ -148,9 +148,10 @@ MEDIA_URL = "/media/"
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_COOKIE_AGE = 60 * 60 * 20
 # STATIC_ROOT = os.path.join(BASE_DIR, "/static/")
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.aliyun.com'
-EMAIL_PORT = 465
-EMAIL_HOST_USER = 'zjcode@aliyun.com'
-EMAIL_HOST_PASSWORD = 'zj19920101,,'
-EMAIL_USE_SSL = True
+
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.aliyun.com'
+# EMAIL_PORT = 465
+# EMAIL_HOST_USER = 'zjcode@aliyun.com'
+# EMAIL_HOST_PASSWORD = 'zj19920101,,'
+# EMAIL_USE_SSL = True

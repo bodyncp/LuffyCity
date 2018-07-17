@@ -17,6 +17,7 @@ from django.contrib.auth.decorators import login_required
 from Luffy.Form import UserFrom, SummaryForm, EditForm, EidtMoTeam
 from Luffy.Util import get_all_code, get_img, not_in_date
 from Luffy.Util import date_range, get_no_summary_user, get_month_data
+from .send_email import send
 
 
 @login_required
@@ -271,13 +272,11 @@ def get_str_code(request):
             obj = models.UserInfo.objects.get(username=user)
             email = obj.email
             if email:
+                # code_str 验证码字符串 email为修改用户的邮箱
                 code_str = get_img()[0]
                 request.session['email_code'] = code_str
 
-                t = threading.Thread(target=send_mail, args=("您的修改密码申请",
-                                                             "您的验证码:%s" % code_str,
-                                                             settings.EMAIL_HOST_USER,
-                                                             [email])
+                t = threading.Thread(target=send, args=(code_str, email)
                                      )
                 t.start()
                 return JsonResponse(response)
@@ -312,7 +311,7 @@ def forget_pwd(request):
             return JsonResponse(response)
         else:
             response["status"] = False
-            response["err_msg"] = "验证码错误，请刷新后重新申请"
+            response["err_msg"] = "验证码错误，请重新申请"
 
             return JsonResponse(response)
     return render(request, 'modify_pwd.html')
@@ -324,4 +323,3 @@ def page_error(request):
     :return:
     """
     return render(request, '404.html')
-# xxxxxxxx

@@ -128,7 +128,6 @@
         if (password.val() != agent_pwd.val()) {
             password.next().text('密码不一致').addClass("text-danger");
         } else {
-
             $.ajax({
                 url: '/forget_pwd/',
                 type: 'post',
